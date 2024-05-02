@@ -1,15 +1,22 @@
 import React from "react";
-import Navbar from "./navbar";
+import { NavLink } from "react-router-dom";
+
+import { useNavigate } from "react-router-dom";
 
 const HeroSection = () => {
+  const navigate = useNavigate();
+
+  const handleSignup = () => {
+    navigate("/signup");
+    console.log("signup");
+  };
+
   return (
     <div>
       <div
         className="relative bg-gradient-to-br from-primary to-purple-800 dark:from-blue-400 dark:to-purple-800"
         id="home"
       >
-        {" "}
-        <Navbar />
         <div
           aria-hidden="true"
           className="absolute inset-0 grid grid-cols-2 -space-x-52 opacity-40 dark:opacity-20"
@@ -32,12 +39,12 @@ const HeroSection = () => {
               ipsum soluta!
             </p>
             <div className="mt-16 flex flex-wrap justify-center gap-y-4 gap-x-6">
-              <a
-                href="#"
+              <button
+                // onClick={handleSignup}
                 className="inline-block bg-primary text-white font-semibold py-3 px-8 rounded-full shadow-md transition duration-300"
               >
-                Get started
-              </a>
+                <NavLink to="/signup"> Explore </NavLink>
+              </button>
               <a
                 href="#"
                 className="inline-block bg-transparent text-primary font-semibold border border-primary py-3 px-8 rounded-full shadow-md transition duration-300"
