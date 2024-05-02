@@ -5,6 +5,9 @@ const app = express();
 const PORT = process.env.PORT || 4000;
 
 const cors = require("cors");
+const dbConnect = require("./config/database");
+
+dbConnect();
 
 app.use(cors());
 
