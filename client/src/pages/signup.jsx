@@ -1,12 +1,14 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 const Signup = () => {
-  const Navigate = useNavigate();
+  const navigate = useNavigate();
 
   const handleSubmit = () => {
-    Navigate("/otppage");
+    navigate("/signup");
   };
+
+  useEffect(() => {}, []);
 
   return (
     <div className="bg-gray-900 min-h-screen flex justify-center items-center font-sans text-white">
@@ -25,7 +27,7 @@ const Signup = () => {
               className="w-full py-2 px-3 rounded border border-gray-700 focus:outline-none text-white focus:border-blue-500"
               id="name"
               type="text"
-              placeholder="name"
+              placeholder="Name"
               required
             />
           </div>
