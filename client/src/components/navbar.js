@@ -1,5 +1,4 @@
 import React from "react";
-import { useNavigate } from "react-router-dom";
 import { NavLink } from "react-router-dom";
 
 const Navbar = () => {
@@ -10,12 +9,12 @@ const Navbar = () => {
           <div className="relative flex items-center justify-between h-16">
             <div className="flex-1 flex items-center justify-center sm:items-stretch sm:justify-start">
               <div className="flex-shrink-0 flex items-center">
-                <span className="text-white font-bold">UserNex</span>
+                <span className="text-white font-bold text-lg">UserNex</span>
               </div>
               <div className="hidden sm:block sm:ml-6">
                 <div className="flex space-x-4">
                   <a
-                    href="#"
+                    href="/"
                     className="text-white px-3 py-2 rounded-md text-sm font-medium"
                   >
                     Home

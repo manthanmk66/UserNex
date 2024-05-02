@@ -1,52 +1,100 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 
 const Signup = () => {
+  const Navigate = useNavigate();
+
+  const handleSubmit = () => {
+    Navigate("/otppage");
+  };
+
   return (
-    <div className="bg-white w-screen font-sans text-gray-900">
-      <div className=" ">
-        <div className="mx-auto w-full sm:max-w-screen-sm md:max-w-screen-md lg:max-w-screen-lg xl:max-w-screen-xl">
-          <div className="mx-2 py-12 text-center md:mx-auto md:w-2/3 md:py-20">
-            <h1 className="mb-4 text-3xl font-black leading-4 sm:text-5xl xl:text-6xl">Sign up</h1>
-            <div className="text-lg sm:text-xl">
-              <div className="">
-                <p className="mb-4">Let's do this! Start your free trial by filling in our simple form below. You will be hearing from us soon!</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div className="md:w-2/3 mx-auto w-full pb-16 sm:max-w-screen-sm md:max-w-screen-md lg:w-1/3 lg:max-w-screen-lg xl:max-w-screen-xl">
-        <form className="shadow-lg mb-4 rounded-lg border border-gray-100 py-10 px-8">
+    <div className="bg-gray-900 min-h-screen flex justify-center items-center font-sans text-white">
+      <div className="max-w-sm p-8 rounded-lg shadow-lg">
+        <h1 className="mb-4 text-3xl font-black">Sign up</h1>
+        <p className="mb-4 text-lg">
+          Let's do this! Start your free trial by filling in our simple form
+          below. You will be hearing from us soon!
+        </p>
+        <form className="mb-4">
           <div className="mb-4">
-            <label className="mb-2 block text-sm font-bold" htmlFor="email">E-mail</label>
-            <input className="shadow-sm w-full cursor-text appearance-none rounded border border-gray-300 py-2 px-3 leading-tight outline-none ring-blue-500 focus:ring" id="email" type="email" placeholder="email" required="" />
-            <span className="my-2 block"></span>
-          </div>
-          <div className="mb-4">
-            <label className="mb-2 block text-sm font-bold" htmlFor="phone">Phone</label>
-            <input className="shadow-sm w-full cursor-text appearance-none rounded border border-gray-300 py-2 px-3 leading-tight outline-none ring-blue-500 focus:ring" id="phone" type="phone" placeholder="Phone" required="" />
-            <span className="my-2 block"></span>
-          </div>
-          <div className="mb-4">
-            <label className="mb-2 block text-sm font-bold" htmlFor="password">Password</label>
-            <input className="shadow-sm w-full cursor-text appearance-none rounded border border-gray-300 py-2 px-3 leading-tight outline-none ring-blue-500 focus:ring" id="password" type="password" placeholder="******************" required="" />
-          </div>
-          <div className="mb-6">
-            <label className="mb-2 flex text-sm">
-              <input type="checkbox" name="accept" className="mr-2" required="" />
-              <div className="text-gray-800">
-                <p className="">
-                  I accept the
-                  <a href="#" className="cursor-pointer text-blue-500 underline">terms of use</a>
-                  and
-                  <a href="#" className="cursor-pointer text-blue-500 underline">privacy policy</a>
-                </p>
-              </div>
+            <label className="block text-sm font-semibold" htmlFor="name">
+              Name
             </label>
+            <input
+              className="w-full py-2 px-3 rounded border border-gray-700 focus:outline-none text-white focus:border-blue-500"
+              id="name"
+              type="text"
+              placeholder="name"
+              required
+            />
           </div>
-          <div className="flex items-center">
-            <div className="flex-1"></div>
-            <button className="cursor-pointer rounded bg-blue-600 py-2 px-8 text-center text-lg font-bold  text-white" type="submit">Create account</button>
+
+          <div className="mb-4">
+            <label className="block text-sm font-semibold" htmlFor="email">
+              E-mail
+            </label>
+            <input
+              className="w-full py-2 px-3 rounded border border-gray-700 focus:outline-none text-white focus:border-blue-500"
+              id="email"
+              type="text"
+              placeholder="Email"
+              required
+            />
+          </div>
+
+          <div className="mb-4">
+            <label className="block text-sm font-semibold" htmlFor="Department">
+              Department
+            </label>
+            <input
+              className="w-full py-2 px-3 rounded border border-gray-700 focus:outline-none text-white focus:border-blue-500"
+              id="department"
+              type="text"
+              placeholder="Department"
+              required
+            />
+          </div>
+
+          <div className="mb-4">
+            <label className="block text-sm font-semibold" htmlFor="department">
+              Department
+            </label>
+            <input
+              className="w-full py-2 px-3 rounded border border-gray-700 focus:outline-none text-white focus:border-blue-500"
+              id="department"
+              type="password"
+              placeholder="Password"
+              required
+            />
+          </div>
+
+          <div className="mb-6">
+            <label className="flex items-center text-sm">
+              <input type="checkbox" name="accept" className="mr-2" required />
+              <span>
+                I accept the
+                <a href="#" className="text-white underline ml-1">
+                  terms of use
+                </a>
+                and
+                <a href="#" className="text-white underline ml-1">
+                  privacy policy
+                </a>
+              </span>
+            </label>
+            <a href="/login" className="text-white mt-10 underline ml-1">
+              Login Here
+            </a>
+          </div>
+          <div className="flex justify-center">
+            <button
+              onClick={handleSubmit}
+              className="bg-blue-600 text-white py-2 px-8 rounded-lg font-semibold"
+              type="submit"
+            >
+              Create account
+            </button>
           </div>
         </form>
       </div>
