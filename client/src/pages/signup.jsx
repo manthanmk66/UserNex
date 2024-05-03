@@ -1,7 +1,13 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 const Signup = () => {
+  const [inputData, setInputData] = useState({
+    name: "",
+    email: "",
+    department: "",
+    password: "",
+  });
   const navigate = useNavigate();
 
   const handleSubmit = () => {
@@ -28,6 +34,9 @@ const Signup = () => {
               id="name"
               type="text"
               placeholder="Name"
+              onChange={(e) =>
+                setInputData({ ...inputData, name: e.target.value })
+              }
               required
             />
           </div>
@@ -41,6 +50,9 @@ const Signup = () => {
               id="email"
               type="text"
               placeholder="Email"
+              onChange={(e) => {
+                setInputData({ ...inputData, email: e.target.value });
+              }}
               required
             />
           </div>
@@ -54,19 +66,25 @@ const Signup = () => {
               id="department"
               type="text"
               placeholder="Department"
+              onChange={(e) => {
+                setInputData({ ...inputData, department: e.target.value });
+              }}
               required
             />
           </div>
 
           <div className="mb-4">
-            <label className="block text-sm font-semibold" htmlFor="department">
-              Department
+            <label className="block text-sm font-semibold" htmlFor="password">
+              PassWord
             </label>
             <input
               className="w-full py-2 px-3 rounded border border-gray-700 focus:outline-none text-white focus:border-blue-500"
-              id="department"
+              id="password"
               type="password"
               placeholder="Password"
+              onChange={(e) => {
+                setInputData({ ...inputData, password: e.target.value });
+              }}
               required
             />
           </div>
