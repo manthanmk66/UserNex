@@ -41,7 +41,7 @@ const HeroSection = () => {
             <div className="mt-16 flex flex-wrap justify-center gap-y-4 gap-x-6">
               <button
                 // onClick={handleSignup}
-                className="inline-block bg-primary text-white font-semibold py-3 px-8 rounded-full shadow-md transition duration-300"
+                className="inline-block  bg-primary text-white font-semibold py-3 px-8 rounded-full shadow-md transition duration-300"
               >
                 <NavLink to="/signup"> Explore </NavLink>
               </button>

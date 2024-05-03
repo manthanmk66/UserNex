@@ -1,15 +1,30 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import toast, { Toaster } from "react-hot-toast";
 
 const Signup = () => {
-  const Navigate = useNavigate();
+  const navigate = useNavigate();
+  const [email, setEmail] = useState({
+    email: "",
+  });
 
-  const handleSubmit = () => {
-    Navigate("/otppage");
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    console.log("in handleSubmit");
+
+    if (email.email === "") {
+      toast.error("Please Enter EmailId");
+    } else if (!email.email.includes("@")) {
+      toast.error("Please Enter Valid Email");
+    } else {
+      navigate("/otppage");
+      toast.success("OTP Sent Successfully");
+    }
   };
 
   return (
     <div className="bg-gray-900 min-h-screen flex justify-center items-center font-sans text-white">
+      <Toaster />
       <div className="max-w-sm p-8 rounded-lg shadow-lg">
         <h1 className="mb-4 text-3xl font-black">Login</h1>
         <p className="mb-4 text-lg">
@@ -19,13 +34,16 @@ const Signup = () => {
         <form className="mb-4">
           <div className="mb-4">
             <label className="block text-sm font-semibold" htmlFor="email">
-              E-mail
+              Email
             </label>
             <input
               className="w-full py-2 px-3 rounded border text-black border-gray-700 focus:outline-none focus:border-blue-500"
               id="email"
               type="email"
               placeholder="Email"
+              onChange={(e) => {
+                setEmail({ ...email, email: e.target.value });
+              }}
               required
             />
           </div>

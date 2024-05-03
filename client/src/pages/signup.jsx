@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import toast, { Toaster } from "react-hot-toast";
 
 const Signup = () => {
   const [inputData, setInputData] = useState({
@@ -14,10 +15,13 @@ const Signup = () => {
     navigate("/signup");
   };
 
-  useEffect(() => {}, []);
+  useEffect(() => {
+    toast.success("Signup Successfull");
+  });
 
   return (
     <div className="bg-gray-900 min-h-screen flex justify-center items-center font-sans text-white">
+      <Toaster />
       <div className="max-w-sm p-8 rounded-lg shadow-lg">
         <h1 className="mb-4 text-3xl font-black">Sign up</h1>
         <p className="mb-4 text-lg">
@@ -30,7 +34,7 @@ const Signup = () => {
               Name
             </label>
             <input
-              className="w-full py-2 px-3 rounded border border-gray-700 focus:outline-none text-white focus:border-blue-500"
+              className="w-full py-2 px-3 rounded border border-gray-700 focus:outline-none text-black focus:border-blue-500"
               id="name"
               type="text"
               placeholder="Name"
@@ -46,7 +50,7 @@ const Signup = () => {
               E-mail
             </label>
             <input
-              className="w-full py-2 px-3 rounded border border-gray-700 focus:outline-none text-white focus:border-blue-500"
+              className="w-full py-2 px-3 rounded border border-gray-700 focus:outline-none text-black focus:border-blue-500"
               id="email"
               type="text"
               placeholder="Email"
@@ -62,7 +66,7 @@ const Signup = () => {
               Department
             </label>
             <input
-              className="w-full py-2 px-3 rounded border border-gray-700 focus:outline-none text-white focus:border-blue-500"
+              className="w-full py-2 px-3 rounded border border-gray-700 focus:outline-none text-black focus:border-blue-500"
               id="department"
               type="text"
               placeholder="Department"
@@ -78,7 +82,7 @@ const Signup = () => {
               PassWord
             </label>
             <input
-              className="w-full py-2 px-3 rounded border border-gray-700 focus:outline-none text-white focus:border-blue-500"
+              className="w-full py-2 px-3 rounded border border-gray-700 focus:outline-none text-black focus:border-blue-500"
               id="password"
               type="password"
               placeholder="Password"
