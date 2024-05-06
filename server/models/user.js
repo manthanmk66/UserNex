@@ -20,7 +20,7 @@ const userSchema=new mongoose.Schema({
         type:String,
         required:true,
     },
-    Department:{
+    department:{
         type:String,
         required:true,
 

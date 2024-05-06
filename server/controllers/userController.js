@@ -1,9 +1,13 @@
-const users = require("../models/userSchema");
-const userotp = require("../models/userOtp");
+const users = require("../models/user");
+// const userotp = require("../models/userOtp");
 const nodemailer = require("nodemailer");
 
+const { Resend } = require("resend");
+
+const resend = new Resend("MAIL_API");
+
 // email config
-const tarnsporter = nodemailer.createTransport({
+const transporter = nodemailer.createTransport({
   service: "gmail",
   auth: {
     user: process.env.USER,
@@ -12,9 +16,9 @@ const tarnsporter = nodemailer.createTransport({
 });
 
 exports.userregister = async (req, res) => {
-  const { fname, email, password } = req.body;
+  const { name, email, department, password } = req.body;
 
-  if (!fname || !email || !password) {
+  if (!name || !email || !password) {
     res.status(400).json({ error: "Please Enter All Input Data" });
   }
 
@@ -25,10 +29,13 @@ exports.userregister = async (req, res) => {
       res.status(400).json({ error: "This User Allready exist in our db" });
     } else {
       const userregister = new users({
-        fname,
+        name,
         email,
+        department,
         password,
+        image: `https://api.dicebear.com/5.x/initials/svg?seed=${name}`,
       });
+      console.log(name);
 
       // here password hashing
 
@@ -119,21 +126,25 @@ exports.userLogin = async (req, res) => {
 
   if (!otp || !email) {
     res.status(400).json({ error: "Please Enter Your OTP and email" });
+    return; // Add return statement to exit the function
   }
 
   try {
-    const otpverification = await userotp.findOne({ email: email });
+    const otpVerification = await userotp.findOne({ email: email });
 
-    if (otpverification.otp === otp) {
+    if (otpVerification && otpVerification.otp === otp) {
+      // Delete the OTP from the database once it's verified
+      await userotp.deleteOne({ email: email });
+
       const preuser = await users.findOne({ email: email });
 
       // token generate
       const token = await preuser.generateAuthtoken();
       res
         .status(200)
-        .json({ message: "User Login Succesfully Done", userToken: token });
+        .json({ message: "User Login Successfully Done", userToken: token });
     } else {
-      res.status(400).json({ error: "Invalid Otp" });
+      res.status(400).json({ error: "Invalid OTP" });
     }
   } catch (error) {
     res.status(400).json({ error: "Invalid Details", error });

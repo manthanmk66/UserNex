@@ -6,6 +6,7 @@ import { Routes, Route, BrowserRouter } from "react-router-dom";
 import Navbar from "./components/navbar";
 import OTP from "./pages/Otp";
 import Login from "./pages/login";
+import ProfileCard from "./components/profile";
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/otppage" element={<OTP />} />
+          <Route path="/profile" element={<ProfileCard />} />
         </Routes>
       </BrowserRouter>
     </div>

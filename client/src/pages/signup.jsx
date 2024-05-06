@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import toast, { Toaster } from "react-hot-toast";
+import axios from "axios";
+import BASE_URL from "../services/Apis";
 
 const Signup = () => {
   const [inputData, setInputData] = useState({
@@ -11,13 +13,23 @@ const Signup = () => {
   });
   const navigate = useNavigate();
 
-  const handleSubmit = () => {
-    navigate("/signup");
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await axios.post(`${BASE_URL}/user/signup`, inputData);
+      console.log(response.data);
+      toast.success("Account Registration successful! Please login.", {
+        position: "top-center",
+      });
+      navigate("/login");
+    } catch (error) {
+      console.error("Registration failed:", error);
+      toast.error("Registration failed. Please try again later.", {
+        position: "top-center",
+      });
+    }
   };
-
-  useEffect(() => {
-    toast.success("Signup Successfull");
-  });
+  
 
   return (
     <div className="bg-gray-900 min-h-screen flex justify-center items-center font-sans text-white">
@@ -28,7 +40,7 @@ const Signup = () => {
           Let's do this! Start your free trial by filling in our simple form
           below. You will be hearing from us soon!
         </p>
-        <form className="mb-4">
+        <form className="mb-4" onSubmit={handleSubmit}>
           <div className="mb-4">
             <label className="block text-sm font-semibold" htmlFor="name">
               Name
