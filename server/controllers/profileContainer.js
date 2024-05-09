@@ -1,4 +1,4 @@
-const User = require('../models/User');
+const User = require("../models/user");
 
 // Controller for user profile endpoints
 const profileController = {
@@ -8,12 +8,12 @@ const profileController = {
       const userId = req.params.userId;
       const user = await User.findById(userId);
       if (!user) {
-        return res.status(404).json({ message: 'User not found' });
+        return res.status(404).json({ message: "User not found" });
       }
       res.status(200).json(user);
     } catch (error) {
-      console.error('Error fetching user profile:', error);
-      res.status(500).json({ message: 'Internal server error' });
+      console.error("Error fetching user profile:", error);
+      res.status(500).json({ message: "Internal server error" });
     }
   },
 
@@ -22,14 +22,18 @@ const profileController = {
     try {
       const userId = req.params.userId;
       const updatedProfile = req.body;
-      const user = await User.findByIdAndUpdate(userId, updatedProfile, { new: true });
+      const user = await User.findByIdAndUpdate(userId, updatedProfile, {
+        new: true,
+      });
       if (!user) {
-        return res.status(404).json({ message: 'User not found' });
+        return res.status(404).json({ message: "User not found" });
       }
-      res.status(200).json({ message: 'User profile updated successfully', user });
+      res
+        .status(200)
+        .json({ message: "User profile updated successfully", user });
     } catch (error) {
-      console.error('Error updating user profile:', error);
-      res.status(500).json({ message: 'Internal server error' });
+      console.error("Error updating user profile:", error);
+      res.status(500).json({ message: "Internal server error" });
     }
   },
 
@@ -39,14 +43,14 @@ const profileController = {
       const userId = req.params.userId;
       const user = await User.findByIdAndDelete(userId);
       if (!user) {
-        return res.status(404).json({ message: 'User not found' });
+        return res.status(404).json({ message: "User not found" });
       }
-      res.status(200).json({ message: 'User profile deleted successfully' });
+      res.status(200).json({ message: "User profile deleted successfully" });
     } catch (error) {
-      console.error('Error deleting user profile:', error);
-      res.status(500).json({ message: 'Internal server error' });
+      console.error("Error deleting user profile:", error);
+      res.status(500).json({ message: "Internal server error" });
     }
-  }
+  },
 };
 
 module.exports = profileController;

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import toast, { Toaster } from "react-hot-toast";
 import axios from "axios";
-import BASE_URL from "../services/Apis";
+import base_url from "../services/Apis";
 
 const Signup = () => {
   const [inputData, setInputData] = useState({
@@ -12,11 +12,12 @@ const Signup = () => {
     password: "",
   });
   const navigate = useNavigate();
+ 
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post(`${BASE_URL}/user/signup`, inputData);
+      const response = await axios.post(`${base_url}/user/register`, inputData);
       console.log(response.data);
       toast.success("Account Registration successful! Please login.", {
         position: "top-center",
@@ -29,7 +30,6 @@ const Signup = () => {
       });
     }
   };
-  
 
   return (
     <div className="bg-gray-900 min-h-screen flex justify-center items-center font-sans text-white">

@@ -1,24 +1,33 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import toast, { Toaster } from "react-hot-toast";
+import axios from "axios";
+import base_url from "../services/Apis";
 
-const Signup = () => {
-  const navigate = useNavigate();
-  const [email, setEmail] = useState({
-    email: "",
-  });
+const Login = () => {
+  const Navigate = useNavigate();
+  const [email, setEmail] = useState("");
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("in handleSubmit");
 
-    if (email.email === "") {
-      toast.error("Please Enter EmailId");
-    } else if (!email.email.includes("@")) {
-      toast.error("Please Enter Valid Email");
-    } else {
-      navigate("/otppage");
-      toast.success("OTP Sent Successfully");
+    try {
+      console.log("Email:", email);
+      // Send email or trigger OTP verification
+      const response = axios.post(`${base_url}/sendEmail`, { email });
+      console.log("responce:", response);
+
+      if (email === "") {
+        toast.error("Please Enter EmailId");
+      } else if (!email.includes("@")) {
+        toast.error("Please Enter Valid Email");
+      } else {
+        Navigate("/otppage");
+        toast.success("OTP Sent Successfully");
+      }
+    } catch (error) {
+      console.error("Error sending email:", error);
+      toast.error("Failed to send OTP. Please try again later.");
     }
   };
 
@@ -31,7 +40,7 @@ const Signup = () => {
           Let's do this! Start your free trial by filling in our simple form
           below. You will be hearing from us soon!
         </p>
-        <form className="mb-4">
+        <form onSubmit={handleSubmit} className="mb-4">
           <div className="mb-4">
             <label className="block text-sm font-semibold" htmlFor="email">
               Email
@@ -41,34 +50,19 @@ const Signup = () => {
               id="email"
               type="email"
               placeholder="Email"
-              onChange={(e) => {
-                setEmail({ ...email, email: e.target.value });
-              }}
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               required
             />
           </div>
 
           <div className="mb-6">
-            {/* <label className="flex items-center text-sm">
-              <input type="checkbox" name="accept" className="mr-2" required />
-              <span>
-                I accept the
-                <a href="#" className="text-white underline ml-1">
-                  terms of use
-                </a>
-                and
-                <a href="#" className="text-white underline ml-1">
-                  privacy policy
-                </a>
-              </span>
-            </label> */}
             <a href="/signup" className="text-white mt-10 underline ml-1">
               Signup Here
             </a>
           </div>
           <div className="flex justify-center">
             <button
-              onClick={handleSubmit}
               className="bg-blue-600 text-white py-2 px-8 rounded-lg font-semibold"
               type="submit"
             >
@@ -81,4 +75,4 @@ const Signup = () => {
   );
 };
 
-export default Signup;
+export default Login;
