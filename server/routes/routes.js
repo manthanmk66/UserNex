@@ -1,11 +1,12 @@
 const express = require("express");
 const router = new express.Router();
-const controllers = require("../controllers/userController");
-const { sendEmail } = require("../controllers/emailController");
-// Routes
-router.post("/user/register", controllers.userregister);
+const userController = require("../controllers/userController");
+const emailController = require("../controllers/emailController");
 
-router.post("/user/login", controllers.userLogin);
-router.post("/sendEmail", sendEmail);
+// Routes
+router.post("/user/register", userController.userRegister);
+router.post("/user/login", userController.userLogin);
+router.post("/verify-otp", userController.verifyOTP);
+router.post("/sendEmail", emailController.sendEmail); // Corrected import and function name
 
 module.exports = router;

@@ -1,38 +1,77 @@
-const users = require("../models/user");
+const bcrypt = require("bcrypt");
+const User = require("../models/user");
+const nodemailer = require("nodemailer");
 
+// Function to generate OTP
+function generateOTP(length) {
+  const digits = "0123456789";
+  let OTP = "";
+  for (let i = 0; i < length; i++) {
+    OTP += digits[Math.floor(Math.random() * 10)];
+  }
+  return OTP;
+}
 
+// Function to send OTP via email
+const sendOTPByEmail = async (email, otp) => {
+  const transporter = nodemailer.createTransport({
+    host: process.env.SMTP,
+    port: process.env.SMTP_PORT,
+    secure: false,
+    auth: {
+      user: process.env.SMTP_MAIL,
+      pass: process.env.SMTP_PASSWORD,
+    },
+  });
 
-exports.userregister = async (req, res) => {
-  const { name, email, department, password } = req.body;
+  const mailOptions = {
+    from: process.env.SMTP_MAIL,
+    to: email,
+    subject: "OTP for User Registration",
+    text: `Your OTP is: ${otp}`,
+  };
+
+  try {
+    await transporter.sendMail(mailOptions);
+    console.log("OTP email sent successfully!");
+  } catch (error) {
+    console.error("Error sending OTP email:", error);
+    throw error;
+  }
+};
+
+// Controller functions
+exports.userRegister = async (req, res) => {
+  const { name, email, password } = req.body;
 
   if (!name || !email || !password) {
-    res.status(400).json({ error: "Please Enter All Input Data" });
-    return;
+    return res.status(400).json({ error: "Please Enter All Input Data" });
   }
 
   try {
-    const presuer = await users.findOne({ email: email });
+    const existingUser = await User.findOne({ email });
 
-    if (presuer) {
-      res
-        .status(400)
-        .json({ error: "This User Already Exists in our database" });
-    } else {
-      const userregister = new users({
-        name,
-        email,
-        department,
-        password,
-        image: `https://api.dicebear.com/5.x/initials/svg?seed=${name}`,
-      });
-
-      // Here you can add password hashing if needed
-
-      const storeData = await userregister.save();
-      res.status(200).json(storeData);
+    if (existingUser) {
+      return res.status(400).json({ error: "User already exists" });
     }
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const otp = generateOTP(6);
+
+    const newUser = new User({
+      name,
+      email,
+      password: hashedPassword,
+      otp,
+    });
+
+    await newUser.save();
+    await sendOTPByEmail(email, otp);
+
+    res.status(200).json({ message: "User registered successfully" });
   } catch (error) {
-    res.status(400).json({ error: "Invalid Details", error });
+    console.error("Error registering user:", error);
+    res.status(500).json({ error: "Internal Server Error" });
   }
 };
 
@@ -40,53 +79,80 @@ exports.userLogin = async (req, res) => {
   const { email, password } = req.body;
 
   if (!email || !password) {
-    return res.status(400).json({ error: "Please Enter Your Email and Password" });
+    return res
+      .status(400)
+      .json({ error: "Please Enter Your Email and Password" });
   }
 
   try {
-    const user = await users.findOne({ email: email });
+    const user = await User.findOne({ email });
 
     if (!user) {
       return res.status(400).json({ error: "Invalid Email or Password" });
     }
 
-    // Handle password verification securely (replace with actual hashing logic)
-    const isPasswordValid = await bcrypt.compare(password, user.password); // Assuming password hashing with bcrypt
+    const isPasswordValid = await bcrypt.compare(password, user.password);
 
     if (!isPasswordValid) {
-      // Consider implementing rate limiting to prevent brute-force attacks
       return res.status(400).json({ error: "Invalid Email or Password" });
     }
 
-    // OTP logic (assuming you have an `otp` field in the user model)
-    if (!user.otp || !user.otpExpiry || new Date() > user.otpExpiry) {
-      // Generate a new OTP (replace with your preferred OTP generation method)
-      const otp = Math.floor(100000 + Math.random() * 900000);
-      user.otp = otp;
-      user.otpExpiry = new Date(Date.now() + 10 * 60 * 1000); // 10 minutes expiry
+    // Successful login
+    res.status(200).json({ message: "Login successful!" });
+  } catch (error) {
+    console.error("Error logging in:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
 
-      // Send the OTP email (replace with your email sending logic)
-      await sendOtpEmail(user.email, otp);
+exports.sendOTP = async (req, res) => {
+  const { email } = req.body;
 
-      await user.save();
+  if (!email) {
+    return res.status(400).json({ error: "Please Enter Your Email" });
+  }
 
-      return res.status(200).json({
-        message: "A one-time password (OTP) has been sent to your email for verification.",
-        otpRequired: true
-      });
+  try {
+    const user = await User.findOne({ email });
+
+    if (!user) {
+      return res.status(400).json({ error: "User not found" });
     }
 
-    // User has a valid OTP, handle verification (replace with your OTP verification logic)
-    // const verified = req.body.otp && req.body.otp === user.otp;
-    // if (!verified) {
-    //   return res.status(400).json({ error: "Invalid OTP" });
-    // }
+    const otp = generateOTP(6);
+    user.otp = otp;
+    await user.save();
 
-    // Successful login (replace with token generation and authentication logic)
-    // ...
+    await sendOTPByEmail(email, otp);
 
+    res.status(200).json({ message: "OTP sent successfully" });
   } catch (error) {
-    console.error(error);
-    return res.status(500).json({ error: "Internal Server Error" });
+    console.error("Error sending OTP:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
+exports.verifyOTP = async (req, res) => {
+  const { email, otp } = req.body;
+
+  if (!email || !otp) {
+    return res.status(400).json({ error: "Please Enter Email and OTP" });
+  }
+
+  try {
+    const user = await User.findOne({ email });
+
+    if (!user || user.otp !== otp) {
+      return res.status(400).json({ error: "Invalid OTP" });
+    }
+
+    // Clear the OTP after successful verification
+    user.otp = null;
+    await user.save();
+
+    res.status(200).json({ message: "OTP verified successfully" });
+  } catch (error) {
+    console.error("Error verifying OTP:", error);
+    res.status(500).json({ error: "Internal Server Error" });
   }
 };
