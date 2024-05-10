@@ -1,12 +1,13 @@
 import React, { useState } from "react";
 import toast, { Toaster } from "react-hot-toast";
 import axios from "axios"; // Import Axios
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import base_url from "../services/Apis";
 
 const OTP = () => {
   const [otp, setOtp] = useState("");
   const { email } = useParams();
+  const Navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -19,6 +20,7 @@ const OTP = () => {
 
       if (response.status === 200) {
         toast.success("OTP verified successfully");
+        Navigate("/profile");
       } else {
         toast.error("Invalid OTP. Please try again.");
       }

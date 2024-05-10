@@ -41,7 +41,7 @@ const sendOTPByEmail = async (email, otp) => {
 };
 
 exports.userRegister = async (req, res) => {
-  const { name, email, password } = req.body;
+  const { name, email, password , mobile, department } = req.body;
 
   if (!name || !email || !password) {
     return res.status(400).json({ error: "Please Enter All Input Data" });
@@ -59,7 +59,10 @@ exports.userRegister = async (req, res) => {
     const newUser = new User({
       name,
       email,
+      mobile,
+      department,
       password: hashedPassword,
+      image: `https://api.dicebear.com/5.x/initials/svg?seed=${name}`,
     });
 
     await newUser.save();
@@ -122,3 +125,7 @@ exports.generateOTP = async (req, res) => {
     res.status(500).json({ error: "Internal Server Error" });
   }
 };
+
+
+
+

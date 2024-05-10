@@ -8,6 +8,7 @@ const Signup = () => {
   const [inputData, setInputData] = useState({
     name: "",
     email: "",
+    mobile: "",
     department: "",
     password: "",
   });
@@ -69,6 +70,21 @@ const Signup = () => {
               type="email"
               name="email"
               placeholder="Email"
+              onChange={handleInputChange}
+              required
+            />
+          </div>
+
+          <div className="mb-4">
+            <label className="block text-sm font-semibold" htmlFor="mobile">
+              Mobile
+            </label>
+            <input
+              className="w-full py-2 px-3 rounded border border-gray-700 focus:outline-none text-black focus:border-blue-500"
+              id="mobile"
+              type="number"
+              name="mobile"
+              placeholder="Mobile"
               onChange={handleInputChange}
               required
             />
