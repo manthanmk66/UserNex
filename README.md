@@ -1,4 +1,4 @@
-**Project Name:** UserNex
+# UserNex
 
 **Description:**
 UserNex is a comprehensive user management system designed to streamline authentication and user profile management processes. Leveraging ReactJS, Tailwind CSS, Node.js, Express.js, JSON Web Token (JWT), and bcrypt.js, UserNex ensures a secure and efficient user experience.
