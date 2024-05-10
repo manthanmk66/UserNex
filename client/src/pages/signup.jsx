@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import toast, { Toaster } from "react-hot-toast";
 import axios from "axios";
@@ -12,7 +12,6 @@ const Signup = () => {
     password: "",
   });
   const navigate = useNavigate();
- 
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -29,6 +28,10 @@ const Signup = () => {
         position: "top-center",
       });
     }
+  };
+
+  const handleInputChange = (e) => {
+    setInputData({ ...inputData, [e.target.name]: e.target.value });
   };
 
   return (
@@ -49,10 +52,9 @@ const Signup = () => {
               className="w-full py-2 px-3 rounded border border-gray-700 focus:outline-none text-black focus:border-blue-500"
               id="name"
               type="text"
+              name="name"
               placeholder="Name"
-              onChange={(e) =>
-                setInputData({ ...inputData, name: e.target.value })
-              }
+              onChange={handleInputChange}
               required
             />
           </div>
@@ -64,27 +66,25 @@ const Signup = () => {
             <input
               className="w-full py-2 px-3 rounded border border-gray-700 focus:outline-none text-black focus:border-blue-500"
               id="email"
-              type="text"
+              type="email"
+              name="email"
               placeholder="Email"
-              onChange={(e) => {
-                setInputData({ ...inputData, email: e.target.value });
-              }}
+              onChange={handleInputChange}
               required
             />
           </div>
 
           <div className="mb-4">
-            <label className="block text-sm font-semibold" htmlFor="Department">
+            <label className="block text-sm font-semibold" htmlFor="department">
               Department
             </label>
             <input
               className="w-full py-2 px-3 rounded border border-gray-700 focus:outline-none text-black focus:border-blue-500"
               id="department"
               type="text"
+              name="department"
               placeholder="Department"
-              onChange={(e) => {
-                setInputData({ ...inputData, department: e.target.value });
-              }}
+              onChange={handleInputChange}
               required
             />
           </div>
@@ -97,10 +97,9 @@ const Signup = () => {
               className="w-full py-2 px-3 rounded border border-gray-700 focus:outline-none text-black focus:border-blue-500"
               id="password"
               type="password"
+              name="password"
               placeholder="Password"
-              onChange={(e) => {
-                setInputData({ ...inputData, password: e.target.value });
-              }}
+              onChange={handleInputChange}
               required
             />
           </div>
@@ -125,7 +124,6 @@ const Signup = () => {
           </div>
           <div className="flex justify-center">
             <button
-              onClick={handleSubmit}
               className="bg-blue-600 text-white py-2 px-8 rounded-lg font-semibold"
               type="submit"
             >

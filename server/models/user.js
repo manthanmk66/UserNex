@@ -24,11 +24,7 @@ const userSchema = new mongoose.Schema({
   image: {
     type: String,
     required: false,
-  },
-  otp: {
-    type: String, 
-    required: false,
-  },
+  }
 });
 
 module.exports = mongoose.model("User", userSchema);

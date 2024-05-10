@@ -1,32 +1,25 @@
 import React, { useState } from "react";
 import toast, { Toaster } from "react-hot-toast";
+import axios from "axios"; // Import Axios
+import { useParams } from "react-router-dom";
+import base_url from "../services/Apis";
 
 const OTP = () => {
   const [otp, setOtp] = useState("");
-
-  const handleInputChange = (e) => {
-    setOtp(e.target.value);
-  };
+  const { email } = useParams();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     try {
-      const response = await fetch("/api/verify-otp", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ otp }),
+      const response = await axios.post(`${base_url}/verifyotp`, {
+        email,
+        otp,
       });
 
-      if (response.ok) {
-        const data = await response.json();
-        // Handle successful OTP verification
-        console.log(data);
+      if (response.status === 200) {
         toast.success("OTP verified successfully");
       } else {
-        // Handle failed OTP verification
         toast.error("Invalid OTP. Please try again.");
       }
     } catch (error) {
@@ -34,6 +27,7 @@ const OTP = () => {
       toast.error("Failed to verify OTP. Please try again later.");
     }
   };
+  console.log(otp);
 
   return (
     <div>
@@ -46,7 +40,7 @@ const OTP = () => {
             <input
               type="text"
               value={otp}
-              onChange={handleInputChange}
+              onChange={(e) => setOtp(e.target.value)}
               className="w-full text-black px-4 py-2 mb-4 border rounded-md focus:outline-none focus:border-blue-500"
               placeholder="Enter OTP"
             />

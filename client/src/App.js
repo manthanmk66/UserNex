@@ -17,7 +17,7 @@ function App() {
           <Route path="/" element={<HeroSection />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
-          <Route path="/otppage" element={<OTP />} />
+          <Route path="/otppage/:email" element={<OTP />} />
           <Route path="/profile" element={<ProfileCard />} />
         </Routes>
       </BrowserRouter>

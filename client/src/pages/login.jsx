@@ -5,24 +5,24 @@ import axios from "axios";
 import base_url from "../services/Apis";
 
 const Login = () => {
-  const Navigate = useNavigate();
+  const navigate = useNavigate();
   const [email, setEmail] = useState("");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     try {
-      console.log("Email:", email);
-      // Send email or trigger OTP verification
-      const response = axios.post(`${base_url}/sendEmail`, { email });
-      console.log("responce:", response);
-
       if (email === "") {
         toast.error("Please Enter EmailId");
       } else if (!email.includes("@")) {
         toast.error("Please Enter Valid Email");
       } else {
-        Navigate("/otppage");
+        // Send request to generate OTP
+        const response = await axios.post(`${base_url}/generate-otp`, {
+          email,
+        });
+        console.log("Response:", response.data);
+        navigate(`/otppage/${email}`);
         toast.success("OTP Sent Successfully");
       }
     } catch (error) {
