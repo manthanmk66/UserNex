@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 import toast, { Toaster } from "react-hot-toast";
 import axios from "axios";
 import base_url from "../services/Apis";
-import loader from "../assets/loader.gif";
 
 const ProfileCard = () => {
   const [userData, setUserData] = useState(null);
@@ -13,7 +12,20 @@ const ProfileCard = () => {
   useEffect(() => {
     const fetchProfile = async () => {
       try {
-        const response = await axios.get(`${base_url}/getprofile`);
+        const token = localStorage.getItem("token"); // Get JWT token from storage
+        if (!token) {
+          // Redirect to login if token is missing
+          navigate("/login");
+          return;
+        }
+
+        const config = {
+          headers: {
+            Authorization: `Bearer ${token}`, // Include JWT token in request headers
+          },
+        };
+
+        const response = await axios.get(`${base_url}/getprofile`, config);
         setUserData(response.data);
         setLoading(false);
         toast.success("Successfully Fetched Details.", {
@@ -24,23 +36,17 @@ const ProfileCard = () => {
         toast.error("Something Went Wrong.", {
           position: "top-center",
         });
+        navigate("/login"); // Redirect to login if there's an error or unauthorized access
       }
     };
 
     fetchProfile();
-  }, []);
+  }, [navigate]);
 
   return (
     <>
       <Toaster />
-      {loading && (
-        <div class="flex space-x-2 justify-center items-center bg-white h-screen dark:invert">
-          <span class="sr-only">Loading...</span>
-          <div class="h-6 w-6 bg-black rounded-full animate-bounce [animation-delay:-0.3s]"></div>
-          <div class="h-6 w-6 bg-black rounded-full animate-bounce [animation-delay:-0.15s]"></div>
-          <div class="h-6 w-6 bg-black rounded-full animate-bounce"></div>
-        </div>
-      )}
+      {loading && <div>Loading...</div>}
       {!loading && userData && (
         <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-primary to-purple-800 dark:from-blue-400 dark:to-purple-800">
           <div className="w-full max-w-md p-8 rounded-xl bg-white dark:bg-gray-800 shadow-lg">
@@ -74,12 +80,12 @@ const ProfileCard = () => {
                 {/* Additional fields */}
               </div>
               <div className="w-full flex justify-center">
-                <a
-                  href={"/login"}
+                <button
+                  onClick={() => navigate("/login")}
                   className="bg-gradient-to-tr from-primary to-secondary justify-center rounded-xl py-2 px-6 inline-block text-white hover:from-secondary hover:to-primary duration-150 shadow-md"
                 >
                   Logout
-                </a>
+                </button>
               </div>
             </div>
           </div>

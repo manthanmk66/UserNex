@@ -6,6 +6,10 @@ const router = require("./routes/routes");
 const app = express();
 const PORT = process.env.PORT || 4000;
 
+const cookieParser=require("cookie-parser")
+app.use(cookieParser());
+
+
 dbConnect();
 
 app.use(

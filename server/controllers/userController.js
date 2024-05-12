@@ -1,7 +1,7 @@
 const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
 const User = require("../models/user");
 const UserOTP = require("../models/userOtp");
-
 const nodemailer = require("nodemailer");
 
 function generateOTP(length) {
@@ -14,34 +14,38 @@ function generateOTP(length) {
 }
 
 const sendOTPByEmail = async (email, otp) => {
-  const transporter = nodemailer.createTransport({
-    host: process.env.SMTP,
-    port: process.env.SMTP_PORT,
-    secure: false,
-    auth: {
-      user: process.env.SMTP_MAIL,
-      pass: process.env.SMTP_PASSWORD,
-    },
-  });
-
-  const mailOptions = {
-    from: process.env.SMTP_MAIL,
-    to: email,
-    subject: "OTP for User Registration",
-    text: `Your OTP is: ${otp}`,
-  };
-
   try {
+    if (!email) {
+      throw new Error("No recipient email address provided");
+    }
+
+    const transporter = nodemailer.createTransport({
+      host: process.env.SMTP,
+      port: process.env.SMTP_PORT,
+      secure: false,
+      auth: {
+        user: process.env.SMTP_MAIL,
+        pass: process.env.SMTP_PASSWORD,
+      },
+    });
+
+    const mailOptions = {
+      from: process.env.SMTP_MAIL,
+      to: email, // Ensure that the 'email' variable is properly defined
+      subject: "OTP for User Registration",
+      text: `Your OTP is: ${otp}`,
+    };
+
     await transporter.sendMail(mailOptions);
     console.log("OTP email sent successfully!");
   } catch (error) {
-    console.error("Error sending OTP email:", error);
-    throw error;
+    console.error("Error sending OTP email:", error.message);
+    throw error; // Rethrow the error to be handled by the caller
   }
 };
 
-exports.userRegister = async (req, res) => {
-  const { name, email, password , mobile, department } = req.body;
+const userRegister = async (req, res) => {
+  const { name, email, password, mobile, department } = req.body;
 
   if (!name || !email || !password) {
     return res.status(400).json({ error: "Please Enter All Input Data" });
@@ -74,13 +78,12 @@ exports.userRegister = async (req, res) => {
   }
 };
 
-exports.verifyOTP = async (req, res) => {
+const verifyOTP = async (req, res) => {
   const { email, otp } = req.body;
-  console.log("Email:", email);
-  console.log("OTP:", otp);
 
   if (!otp) {
-    return res.status(400).json({ error: "Please Enter Email and OTP" });
+    console.error("No recipient email address provided");
+    return; // Exit function early if email is not defined
   }
 
   try {
@@ -101,31 +104,4 @@ exports.verifyOTP = async (req, res) => {
   }
 };
 
-exports.generateOTP = async (req, res) => {
-  const { email } = req.body;
-
-  try {
-    const otp = generateOTP(6);
-
-    // Save OTP to the database
-    const newUserOTP = new UserOTP({
-      email,
-      otp,
-    });
-    await newUserOTP.save();
-
-    // Send OTP via email
-    await sendOTPByEmail(email, otp);
-
-    res
-      .status(200)
-      .json({ message: "OTP generated and saved successfully", otp });
-  } catch (error) {
-    console.error("Error generating OTP:", error);
-    res.status(500).json({ error: "Internal Server Error" });
-  }
-};
-
-
-
-
+module.exports = { userRegister, verifyOTP, generateOTP, sendOTPByEmail };
