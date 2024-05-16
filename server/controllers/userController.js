@@ -1,7 +1,8 @@
 const bcrypt = require("bcrypt");
-const jwt = require("jsonwebtoken");
 const User = require("../models/user");
 const UserOTP = require("../models/userOtp");
+const jwt = require("jsonwebtoken");
+
 const nodemailer = require("nodemailer");
 
 function generateOTP(length) {
@@ -14,37 +15,33 @@ function generateOTP(length) {
 }
 
 const sendOTPByEmail = async (email, otp) => {
+  const transporter = nodemailer.createTransport({
+    host: process.env.SMTP,
+    port: process.env.SMTP_PORT,
+    secure: false,
+    auth: {
+      user: process.env.SMTP_MAIL,
+      pass: process.env.SMTP_PASSWORD,
+    },
+  });
+
+  const mailOptions = {
+    from: process.env.SMTP_MAIL,
+    to: email,
+    subject: "OTP for User Registration",
+    text: `Your OTP is: ${otp}`,
+  };
+
   try {
-    if (!email) {
-      throw new Error("No recipient email address provided");
-    }
-
-    const transporter = nodemailer.createTransport({
-      host: process.env.SMTP,
-      port: process.env.SMTP_PORT,
-      secure: false,
-      auth: {
-        user: process.env.SMTP_MAIL,
-        pass: process.env.SMTP_PASSWORD,
-      },
-    });
-
-    const mailOptions = {
-      from: process.env.SMTP_MAIL,
-      to: email, // Ensure that the 'email' variable is properly defined
-      subject: "OTP for User Registration",
-      text: `Your OTP is: ${otp}`,
-    };
-
     await transporter.sendMail(mailOptions);
     console.log("OTP email sent successfully!");
   } catch (error) {
-    console.error("Error sending OTP email:", error.message);
-    throw error; // Rethrow the error to be handled by the caller
+    console.error("Error sending OTP email:", error);
+    throw error;
   }
 };
 
-const userRegister = async (req, res) => {
+exports.userRegister = async (req, res) => {
   const { name, email, password, mobile, department } = req.body;
 
   if (!name || !email || !password) {
@@ -78,12 +75,11 @@ const userRegister = async (req, res) => {
   }
 };
 
-const verifyOTP = async (req, res) => {
+exports.verifyOTP = async (req, res) => {
   const { email, otp } = req.body;
 
   if (!otp) {
-    console.error("No recipient email address provided");
-    return; // Exit function early if email is not defined
+    return res.status(400).json({ error: "Please Enter Email and OTP" });
   }
 
   try {
@@ -97,11 +93,61 @@ const verifyOTP = async (req, res) => {
     // Clear the OTP after successful verification
     await UserOTP.findOneAndDelete({ email });
 
-    res.status(200).json({ message: "OTP verified successfully" });
+    // Define payload for JWT token
+    const payload = { email: userOTP.email }; // Adjust as per your requirements
+
+    // Generate token for the verified user
+    const token = jwt.sign(payload, process.env.JWT_SECRET, {
+      expiresIn: "2h",
+    });
+
+    // Get user details from database
+    const user = await User.findOne({ email: userOTP.email });
+
+    // Remove password from user object
+    const userWithoutPassword = { ...user.toObject(), password: undefined };
+
+    // Set cookie with token
+    const options = {
+      expires: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000),
+      httpOnly: true,
+    };
+    res.cookie("newtoken", token, options);
+
+    // Send response with token and user details
+    res.status(200).json({
+      success: true,
+      message: "User Logged in Successfully",
+      user: userWithoutPassword,
+      token: token,
+    });
   } catch (error) {
     console.error("Error verifying OTP:", error);
     res.status(500).json({ error: "Internal Server Error" });
   }
 };
 
-module.exports = { userRegister, verifyOTP, generateOTP, sendOTPByEmail };
+exports.generateOTP = async (req, res) => {
+  const { email } = req.body;
+
+  try {
+    const otp = generateOTP(6);
+
+    // Save OTP to the database
+    const newUserOTP = new UserOTP({
+      email,
+      otp,
+    });
+    await newUserOTP.save();
+
+    // Send OTP via email
+    await sendOTPByEmail(email, otp);
+
+    res
+      .status(200)
+      .json({ message: "OTP generated and saved successfully", otp });
+  } catch (error) {
+    console.error("Error generating OTP:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};

@@ -2,17 +2,25 @@ const User = require("../models/user");
 
 const getUserProfile = async (req, res) => {
   try {
-    const userId = req.params.userId;
-    const user = await User.findById(userId);
+    console.log("User ID:", req.userId);
+
+    const user = await User.findById(req.userId);
+
     if (!user) {
+      console.error("User not found");
       return res.status(404).json({ message: "User not found" });
     }
+
+    console.log("User Profile:", user);
+
     res.status(200).json(user);
   } catch (error) {
     console.error("Error fetching user profile:", error);
     res.status(500).json({ message: "Internal server error" });
   }
 };
+
+module.exports = { getUserProfile };
 
 const updateUserProfile = async (req, res) => {
   try {
