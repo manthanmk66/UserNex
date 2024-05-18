@@ -1,5 +1,5 @@
 const User = require("../models/user");
-
+//profilecontroller
 const getUserProfile = async (req, res) => {
   try {
     console.log("User ID:", req.userId);
