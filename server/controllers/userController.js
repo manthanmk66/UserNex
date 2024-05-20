@@ -2,8 +2,8 @@ const bcrypt = require("bcrypt");
 const User = require("../models/user");
 const UserOTP = require("../models/userOtp");
 const jwt = require("jsonwebtoken");
-
 const nodemailer = require("nodemailer");
+require("dotenv").config();
 
 function generateOTP(length) {
   const digits = "0123456789";
@@ -16,8 +16,8 @@ function generateOTP(length) {
 
 const sendOTPByEmail = async (email, otp) => {
   const transporter = nodemailer.createTransport({
-    host: process.env.SMTP,
-    port: process.env.SMTP_PORT,
+    host: "smtp.ethereal.email",
+    port: 587,
     secure: false,
     auth: {
       user: process.env.SMTP_MAIL,
@@ -98,8 +98,9 @@ exports.verifyOTP = async (req, res) => {
 
     // Generate token for the verified user
     const token = jwt.sign(payload, process.env.JWT_SECRET, {
-      expiresIn: "2h",
+      expiresIn: 2 * 24 * 60 * 60,
     });
+    console.log(process.env.JWT_SECRET);
 
     // Get user details from database
     const user = await User.findOne({ email: userOTP.email });

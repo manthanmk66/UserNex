@@ -1,10 +1,14 @@
 const jwt = require("jsonwebtoken");
 const User = require("../models/user");
+require("dotenv").config();
+
 const keysecret = process.env.JWT_SECRET;
 
 const authenticate = async (req, res, next) => {
   try {
     let token;
+
+    console.log(keysecret);
 
     // Check if the token is present in the cookies, body, or headers
     if (req.cookies.token) {
@@ -26,8 +30,10 @@ const authenticate = async (req, res, next) => {
     }
 
     console.log("Token:", token);
+    console.log("here it comes");
 
     const verifytoken = jwt.verify(token, keysecret);
+    console.log("not coming here");
 
     console.log("Decoded Token:", verifytoken);
 

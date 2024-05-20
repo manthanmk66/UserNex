@@ -19,12 +19,7 @@ const Navbar = () => {
                   >
                     Home
                   </a>
-                  <a
-                    href="#"
-                    className="text-white px-3 py-2 rounded-md text-sm font-medium"
-                  >
-                    News
-                  </a>
+
                   <a
                     href="#"
                     className="text-white px-3 py-2 rounded-md text-sm font-medium"
@@ -88,7 +83,10 @@ const Navbar = () => {
                   Sign Up
                 </NavLink>
 
-                <a href="#" className="text-gray-300 ml-4">
+                <a
+                  href="https://x.com/manthan_reddy"
+                  className="text-gray-300 ml-4"
+                >
                   <span className="sr-only">Twitter</span>
                   {/* Twitter icon */}
                   <svg
@@ -104,7 +102,10 @@ const Navbar = () => {
                     />
                   </svg>
                 </a>
-                <a href="#" className="text-gray-300 ml-4">
+                <a
+                  href="https://github.com/manthanmk66"
+                  className="text-gray-300 ml-4"
+                >
                   <span className="sr-only">GitHub</span>
                   {/* GitHub icon */}
                   <svg

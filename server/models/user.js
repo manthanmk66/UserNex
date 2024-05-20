@@ -30,21 +30,23 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: false,
   },
+  tokens: [{ token: { type: String, required: true } }], // Define tokens array
 });
 
-// token generate
+// Define your method to generate auth token
 userSchema.methods.generateAuthtoken = async function () {
   try {
-    let token23 = jwt.sign({ _id: this._id }, keysecret, {
+    const token = jwt.sign({ _id: this._id }, process.env.JWT_SECRET, {
       expiresIn: "1d",
     });
 
-    this.tokens = this.tokens.concat({ token: token23 });
+    // Concatenate token to tokens array
+    this.tokens = this.tokens.concat({ token });
     await this.save();
-    return token23;
+    return token;
   } catch (error) {
-    res.status(422).json(error);
+    throw new Error(error); // Throw error for proper handling where this method is called
   }
-}; // <-- Add this closing curly brace
+};
 
 module.exports = mongoose.model("User", userSchema);

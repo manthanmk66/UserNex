@@ -54,22 +54,22 @@ const HeroSection = () => {
             </div>
             <div className="hidden py-8 mt-16 border-y border-gray-100 dark:border-gray-800 sm:flex justify-between">
               <div className="text-left">
-                <h6 className="text-lg font-semibold text-gray-700 dark:text-white">
+                <h6 className="text-lg font-semibold text-gray-800 dark:text-white">
                   The lowest price
                 </h6>
-                <p className="mt-2 text-gray-500">Some text here</p>
+                <p className="mt-2 text-gray-800">Some text here</p>
               </div>
               <div className="text-left">
                 <h6 className="text-lg font-semibold text-gray-700 dark:text-white">
                   The fastest on the market
                 </h6>
-                <p className="mt-2 text-gray-500">Some text here</p>
+                <p className="mt-2 text-gray-800">Some text here</p>
               </div>
               <div className="text-left">
                 <h6 className="text-lg font-semibold text-gray-700 dark:text-white">
                   The most loved
                 </h6>
-                <p className="mt-2 text-gray-500">Some text here</p>
+                <p className="mt-2 text-gray-800">Some text here</p>
               </div>
             </div>
           </div>
